@@ -64,11 +64,9 @@ public class RNHTMLtoPDFModule extends ReactContextBaseJavaModule {
 
       if (options.hasKey(DIRECTORY)) {
         String state = Environment.getExternalStorageState();
-        // File path = (Environment.MEDIA_MOUNTED.equals(state)) ?
-        //   new File(mReactContext.getExternalFilesDir(null), options.getString(DIRECTORY)) :
-        //   new File(mReactContext.getFilesDir(), options.getString(DIRECTORY));
-        // Custom file path
-        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), options.getString(DIRECTORY));
+        File path = (Environment.MEDIA_MOUNTED.equals(state)) ?
+          new File(mReactContext.getExternalFilesDir(null), options.getString(DIRECTORY)) :
+          new File(mReactContext.getFilesDir(), options.getString(DIRECTORY));
 
         if (!path.exists()) {
           if (!path.mkdirs()) {
@@ -78,7 +76,8 @@ public class RNHTMLtoPDFModule extends ReactContextBaseJavaModule {
         }
         destinationFile = new File(path, fileName + PDF_EXTENSION);
       } else {
-        destinationFile = getTempFile(fileName);
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        destinationFile = new File(path, fileName + PDF_EXTENSION);
       }
 
       PrintAttributes pagesize=null;
